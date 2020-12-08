@@ -33,6 +33,9 @@ $('document').ready(function () {
             if (data.id == '') {
                 // "None" was selected. Clear all selected options
                 $(this).val([]).trigger('change');
+                if(e.currentTarget.name == 'id_group'){
+                    id_group = 0;
+                }
             } else {
                 $(e.currentTarget).find("option[value='" + data.id + "']").attr('selected','selected');
                 if(e.currentTarget.name == 'id_group'){
