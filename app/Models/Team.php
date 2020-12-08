@@ -13,8 +13,9 @@ class Team extends Model
       return $this->hasMany('App\Models\Point');
     }
 
-    public function scopeActive($query)
-{
-    //return $query->where('id_type', 1);
+    public function scopeActive($query, $group)
+{   
+    return $query->where('id_type', $group);
 }
+
 }

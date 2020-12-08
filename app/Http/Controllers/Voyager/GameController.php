@@ -19,6 +19,7 @@ use TCG\Voyager\Http\Controllers\VoyagerBaseController;
 use App\Http\Controllers\Voyager\PointController;
 use App\Models\Point;
 use App\Models\Game;
+use App\Models\Team;
 
 class GameController extends VoyagerBaseController
 {
@@ -933,7 +934,12 @@ class GameController extends VoyagerBaseController
 
         $method = $request->input('method', 'add');
 
+        
+
         $model = app($dataType->model_name);
+        //ID GROUP
+        $id_group = $request->input('group');
+
         if ($method != 'add') {
             $model = $model->find($request->input('id'));
         }
@@ -949,6 +955,7 @@ class GameController extends VoyagerBaseController
 
             if ($row->field === $request->input('type')) {
                 $options = $row->details;
+                
 
                 $model = app($options->model);
                 $skip = $on_page * ($page - 1);
@@ -956,13 +963,11 @@ class GameController extends VoyagerBaseController
                 $additional_attributes = $model->additional_attributes ?? [];
 
                 // Apply local scope if it is defined in the relationship-options
-                
-                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope'.ucfirst($options->scope))) {
+
+                if (isset($options->scope) && $options->scope != '' && method_exists($model, 'scope'.ucfirst($options->scope)) && $options->table != 'teams') {
                     $model = $model->{$options->scope}();
 
                 }
-
-
 
                 // If search query, use LIKE to filter results depending on field label
                 if ($search) {
@@ -984,8 +989,17 @@ class GameController extends VoyagerBaseController
                     }
                 } else {
 
-                    $total_count = $model->count();
-                    $relationshipOptions = $model->take($on_page)->skip($skip)->get();
+                    $total_count = $model->count(); 
+
+                    if($options->table == 'teams'){
+                        $relationshipOptions = $model->active($id_group)->get();
+
+                    }else{
+                        $relationshipOptions = $model->take($on_page)->skip($skip)->get();
+                    }
+
+                    
+
 
                 }
 
