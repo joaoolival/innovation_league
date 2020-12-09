@@ -7,6 +7,8 @@
 
 $('document').ready(function () {
     var id_group = 0;
+    var id_group_old = 0;
+    var id_type = 0;
     
     $('select.select2-ajax').select2('destroy');
     $('select.select2-ajax').each(function() {
@@ -21,7 +23,8 @@ $('document').ready(function () {
                         method: $(this).data('method'),
                         id: $(this).data('id'),
                         page: params.page || 1,
-                        group: id_group
+                        group: id_group,
+                        type_game: id_type
                     }
                     return query;
                 }
@@ -36,10 +39,25 @@ $('document').ready(function () {
                 if(e.currentTarget.name == 'id_group'){
                     id_group = 0;
                 }
+                if(e.currentTarget.name == 'id_type'){
+                    id_type = 0;
+                    $(this).parent().next().show( "slow" );
+                }
             } else {
                 $(e.currentTarget).find("option[value='" + data.id + "']").attr('selected','selected');
                 if(e.currentTarget.name == 'id_group'){
                     id_group = e.currentTarget.value;
+                }
+                if(e.currentTarget.name == 'id_type'){
+                    id_type = e.currentTarget.value;
+                    if(e.currentTarget.value > 1){
+                        $(this).parent().next().hide( "slow" );
+                        id_group_old = id_group;
+                        id_group = 0;
+                    }else{
+                        $(this).parent().next().show( "slow" );
+                        id_group = id_group_old;
+                    }
                 }
                 
             }

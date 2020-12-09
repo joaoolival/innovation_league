@@ -20,7 +20,9 @@ use App\Http\Controllers\Voyager\PointController;
 use App\Models\Point;
 use App\Models\Game;
 use App\Models\Team;
+use App\Models\Group;
 use App\Scopes\TeamScope;
+use App\Scopes\GroupScope;
 
 class GameController extends VoyagerBaseController
 {
@@ -928,10 +930,14 @@ class GameController extends VoyagerBaseController
     public function relation(Request $request)
     {   //ID GROUP
         $id_group = $request->input('group');
+        $id_type = $request->input('type_game');
 
         // Find out if you have to apply the scope, YourScope and YourModel
         if($id_group != 0){
             Team::addGlobalScope(new TeamScope($id_group));
+        }
+        if($id_type != 1){
+            Group::addGlobalScope(new GroupScope());
         }
         
         return parent::relation($request);
